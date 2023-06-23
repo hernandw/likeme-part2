@@ -1,11 +1,11 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 const { getPosts, guardarPost, likePost, deletePost } = require("./consultas");
 
-router.get('/', (req, res) => {
-    res.send('Servidor Activo')
-})
+router.get("/", (req, res) => {
+  res.send("Servidor Activo en express");
+});
 
 router.post("/posts", async (req, res) => {
   try {
@@ -32,19 +32,20 @@ router.put("/posts/like/:id", async (req, res) => {
     const result = await likePost(id);
     res.send(result);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
   }
 });
 
-router.delete("/posts/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await deletePost(id);
-    res.send(result);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+
+router.delete('/posts/:id', async (req, res) => {
+try {
+  const { id } = req.params;
+  const result = await deletePost(id);
+  res.send(result)
+} catch (error) {
+  console.log(error)
+}
+
+})
 
 module.exports = router;
-

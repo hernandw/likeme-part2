@@ -1,16 +1,15 @@
-const  pool  = require("./conexion");
-/* const { guardarPost, getPosts, likePost, deletePost } = require("./consultas"); */
+const pool = require("./conexion");
 
 const getPosts = async () => {
   const result = await pool.query("SELECT * FROM posts");
-  console.log(result.rows)
+  console.log(result.rows);
   return result.rows;
 };
 
 const guardarPost = async (post) => {
   const values = Object.values(post);
   const consulta = {
-    text: "INSERT INTO posts (id, titulo, img, descripcion, likes ) values (DEFAULT, $1, $2, $3, 0) RETURNING *",
+    text: "INSERT INTO posts (id, titulo, img, descripcion, likes ) values (DEFAULT, $1, $2, $3, 0)",
     values,
   };
   const result = await pool.query(consulta);
@@ -19,17 +18,21 @@ const guardarPost = async (post) => {
 };
 
 const likePost = async (id) => {
-  const result = await pool.query(
-    "UPDATE posts SET likes = likes + 1 WHERE id = $1",
-    [id]
-  );
-  return result.rows;
+  try {
+    const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1";
+    const values = [id];
+    const { rows } = await pool.query(consulta, values);
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const deletePost = async (id) => {
-  const result = await pool.query("DELETE FROM posts WHERE id = $1", [id]);
+  const consulta = "DELETE FROM posts WHERE id = $1";
+  const values = [id];
+  const result = await pool.query(consulta, values);
   return result.rows;
 };
-
 
 module.exports = { getPosts, guardarPost, likePost, deletePost };
